@@ -105,7 +105,11 @@ class PurchaseLine(metaclass=PoolMeta):
                     else:
                         purchase_line.unit_price = unit_price
 
-                    to_create.append(purchase_line._save_values())
+                    values = purchase_line._save_values()
+                    to_create.append({
+                            name: value for name, value in values.items()
+                            if not cls._fields[name].readonly
+                            })
                     if product.kit and product.kit_lines:
                         product_kit_lines = list(zip(
                             product.kit_lines,
